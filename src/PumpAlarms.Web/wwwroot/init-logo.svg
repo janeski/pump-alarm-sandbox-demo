@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="370 360 1260 570" role="img" aria-label="init.">
+  <!-- Redrawn from the Init logo image; orange is approximated from it. -->
+  <g fill="#000000">
+    <rect x="377" y="555" width="148" height="365"/>
+    <path d="M585 555 H775 A184 184 0 0 1 959 739 V920 H811 V749 A46 46 0 0 0 765 703 H733 V920 H585 Z"/>
+    <rect x="1019" y="555" width="148" height="365"/>
+    <path d="M1288 442 H1436 V555 H1549 V703 H1436 V924 A148 148 0 0 1 1288 776 V703 H1210 V555 H1288 Z"/>
+  </g>
+  <g fill="#F07D00">
+    <circle cx="451" cy="442" r="78"/>
+    <circle cx="1093" cy="442" r="78"/>
+    <circle cx="1548" cy="846" r="78"/>
+  </g>
+</svg>

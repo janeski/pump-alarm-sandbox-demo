@@ -1,0 +1,9 @@
+timestamp,pump_id,site,alarm_code,severity,duration_min
+2026-10-01T06:12:00,P-101,Bergen-North,HIGH_TEMP,warning,14
+2026-10-01T07:40:00,P-101,Bergen-North,HIGH_TEMP,critical,32
+2026-10-01T08:05:00,P-204,Oslo-East,LOW_PRESSURE,warning,6
+2026-10-02T02:30:00,P-101,Bergen-North,VIBRATION,critical,45
+2026-10-02T11:15:00,P-310,Trondheim,DRY_RUN,critical,3
+2026-10-03T09:00:00,P-204,Oslo-East,LOW_PRESSURE,warning,8
+2026-10-03T21:47:00,P-101,Bergen-North,HIGH_TEMP,critical,51
+2026-10-04T13:20:00,P-310,Trondheim,COMM_LOSS,info,120

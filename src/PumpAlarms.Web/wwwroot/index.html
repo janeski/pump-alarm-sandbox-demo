@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pump Alarm Analyzer · init.</title>
+  <link rel="icon" href="init-logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img class="logo" src="init-logo.svg" alt="init.">
+      <span class="brand-divider" aria-hidden="true"></span>
+      <div>
+        <h1>Pump Alarm Analyzer<span class="dot">.</span></h1>
+        <p class="tagline">AI writes the Python. An Azure Container Apps sandbox runs it.</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span id="mode" class="badge" hidden></span>
+      <div id="sandbox" class="sandbox" data-phase="busy" hidden>
+        <span class="sb-dot" aria-hidden="true"></span>
+        <div class="sb-text">
+          <span class="sb-label">ACA Sandbox</span>
+          <span><span id="sb-state">…</span> <span id="sb-detail" class="muted"></span></span>
+        </div>
+        <button id="sb-toggle" class="sb-btn" type="button" disabled>…</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- Input -->
+    <section class="panel input" aria-labelledby="input-title">
+      <h2 id="input-title" class="visually-hidden">Input</h2>
+
+      <div class="card">
+        <div class="card-head"><span class="num">1</span> Alarm file</div>
+
+        <label id="drop" class="drop" for="file">
+          <input id="file" type="file" accept=".csv,text/csv">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-4 4m4-4 4 4M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="drop-main">Drop a CSV here or <u>browse</u></span>
+          <span class="drop-sub">timestamp, pump_id, site, alarm_code, severity, duration_min</span>
+        </label>
+
+        <div id="file-info" class="file-info" hidden>
+          <div class="file-row">
+            <div>
+              <div id="file-name" class="file-name"></div>
+              <div id="file-meta" class="muted small"></div>
+            </div>
+            <button id="file-clear" class="link" type="button">Change</button>
+          </div>
+          <div id="columns" class="chips static"></div>
+          <div class="preview-wrap"><table id="preview" class="preview"></table></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="num">2</span> Question</div>
+        <textarea id="question" rows="3">Which pumps need attention and why?</textarea>
+        <div class="chips" id="suggestions">
+          <button type="button" class="chip">Which pumps need attention and why?</button>
+          <button type="button" class="chip">Are any alarms getting worse over time?</button>
+          <button type="button" class="chip">Which site loses the most time to critical alarms?</button>
+          <button type="button" class="chip">Was there a site-wide incident?</button>
+          <button type="button" class="chip">Clean the data, tell me what you fixed, then which pumps need attention.</button>
+        </div>
+      </div>
+
+      <button id="analyze" class="primary" type="button" disabled>
+        <span class="btn-label">Analyze in sandbox</span>
+        <span class="spinner" aria-hidden="true"></span>
+      </button>    </section>
+
+    <!-- Output -->
+    <section class="panel output" aria-live="polite">
+      <ol id="pipeline" class="pipeline">
+        <li data-step="upload"><span class="dot"></span><span>Upload to sandbox</span></li>
+        <li data-step="write"><span class="dot"></span><span>AI writes Python</span></li>
+        <li data-step="run"><span class="dot"></span><span>Sandbox runs it</span></li>
+        <li data-step="answer"><span class="dot"></span><span>AI explains</span></li>
+      </ol>
+
+      <div id="empty" class="empty">
+        <p class="empty-title">No analysis yet</p>
+        <p class="muted">Pick an alarm file, ask a question, and press <strong>Analyze in sandbox</strong>.
+          The code the AI writes runs in an isolated session with no network access, never in this app.</p>
+      </div>
+
+      <div id="error" class="card error" hidden></div>
+
+      <div id="result" hidden>
+        <article class="card answer">
+          <div class="card-head">
+            Answer
+            <span id="result-meta" class="muted small right"></span>
+          </div>
+          <p id="result-question" class="question-echo"></p>
+          <div id="answer" class="markdown"></div>
+        </article>
+
+        <div id="trace-section" hidden>
+          <div class="section-title">
+            Sequence
+            <span id="trace-meta" class="muted small"></span>
+          </div>
+          <div class="card trace">
+            <div class="trace-legend small muted">
+              <span><i class="sw model"></i>model</span>
+              <span><i class="sw tool"></i>tool call</span>
+              <span><i class="sw governance"></i>policy check</span>
+              <span><i class="sw sandbox"></i>sandbox</span>
+            </div>
+            <div id="trace"></div>
+          </div>
+        </div>
+
+        <div id="gov-section" hidden>
+          <div class="section-title">
+            Governance
+            <span id="gov-meta" class="muted small"></span>
+          </div>
+          <div class="card gov">
+            <p class="gov-intro small muted">
+              Every script the model writes is checked by the <strong>Agent Governance Toolkit</strong> policy
+              <code id="gov-policy"></code> before it can reach the sandbox. Blocked scripts never run.
+            </p>
+            <div class="gov-table-wrap">
+              <table class="gov-table">
+                <thead>
+                  <tr><th>Run</th><th>Decision</th><th>Rule</th><th>What the scan found</th><th>Code</th><th>Sandbox</th></tr>
+                </thead>
+                <tbody id="gov-rows"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">
+          Code that ran in the sandbox
+          <span id="session" class="muted small mono"></span>
+        </div>
+        <div id="steps"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

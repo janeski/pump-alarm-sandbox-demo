@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PumpAlarms.AppHost/PumpAlarms.AppHost.csproj" />
+    <Project Path="src/PumpAlarms.ServiceDefaults/PumpAlarms.ServiceDefaults.csproj" />
+    <Project Path="src/PumpAlarms.Web/PumpAlarms.Web.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,44 @@
+# Agent Governance Toolkit policy for the run_python tool.
+# The app scans each script into facts (CodeScanner) and AGT decides here, before anything reaches the sandbox.
+# Facts: imports_network, starts_processes, uses_dynamic_code, touches_outside_root (true/false),
+#        code_lines, run_number (numbers), tool_name.
+# The sandbox is still the real isolation boundary (egress Deny); this policy stops bad code earlier and audits it.
+apiVersion: governance.toolkit/v1
+version: "1.0"
+name: pump-analyst-policy
+default_action: deny
+rules:
+  - name: block-network
+    condition: "imports_network"
+    action: deny
+    priority: 100
+
+  - name: block-processes
+    condition: "starts_processes"
+    action: deny
+    priority: 100
+
+  - name: block-dynamic-code
+    condition: "uses_dynamic_code"
+    action: deny
+    priority: 100
+
+  - name: block-files-outside-root
+    condition: "touches_outside_root"
+    action: deny
+    priority: 100
+
+  - name: limit-runs
+    condition: "run_number > 5"
+    action: deny
+    priority: 90
+
+  - name: limit-code-size
+    condition: "code_lines > 200"
+    action: deny
+    priority: 90
+
+  - name: allow-python-analysis
+    condition: "tool_name == 'run_python'"
+    action: allow
+    priority: 10

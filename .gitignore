@@ -1,0 +1,11 @@
+bin/
+obj/
+.vs/
+*.user
+
+# Local settings with subscription and sandbox IDs
+appsettings.Development.json
+.azure/
+
+# Local tooling
+.claude/
